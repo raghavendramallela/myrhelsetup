@@ -1,0 +1,49 @@
+FROM registry.access.redhat.com/ubi9
+
+LABEL author="raghu" \
+      website="raghu.sh" \
+      container="ubi9-cntnr"
+
+## installs & raghu wheel user
+RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    dnf -y update && \
+    dnf -y install sudo zsh exa git python3 cargo ripgrep cmake gcc make unzip gettext && \
+    dnf -y clean all && \
+    echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers &&  \
+    useradd -m -G wheel -s /bin/zsh -u 8055 raghu
+
+## switch user raghu
+USER 8055
+WORKDIR /home/raghu
+
+## zsh setup
+RUN zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1
+COPY --chown=raghu:raghu .zshrc .
+COPY --chown=raghu:raghu zap-prompt.zsh-theme ./.local/share/zap/plugins/zap-prompt/zap-prompt.zsh-theme
+
+## set local timezone 
+RUN sudo rm -rf /etc/localtime && \
+    sudo ln -s /usr/share/zoneinfo/Asia/Kolkata /etc/localtime && \
+## build & install neovim-stable frm src
+    git clone https://github.com/neovim/neovim && \
+    cd neovim && \
+    git checkout stable && \
+    make CMAKE_BUILD_TYPE=RelWithDebInfo && \
+    sudo make install && \
+    cd ~ && \
+    rm -rf neovim && \
+## build & install fuzzy finder frm src
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
+    ~/.fzf/install --all
+
+ENTRYPOINT ["bash", "-c", "tail -f /dev/null"]
+
+
+## pull base image:
+## docker pull registry.access.redhat.com/ubi9
+## build the image:
+## docker build -f Dockerfile.ubi9 $PWD -t ubi9-cntnr
+## run a container:
+## docker run -dt --hostname ubi-9cntnr --name ubi9-cntnr --restart always ubi9-cntnr zsh
+## exec a z-shell in the container:
+## docker exec -it ubi9-cntnr zsh 
