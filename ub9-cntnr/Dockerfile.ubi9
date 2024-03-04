@@ -6,8 +6,9 @@ LABEL author="raghu" \
 
 ## installs & raghu wheel user
 RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    dnf copr enable atim/lazygit -y && \
     dnf -y update && \
-    dnf -y install sudo zsh exa git python3 cargo ripgrep cmake gcc make unzip gettext && \
+    dnf -y install sudo zsh exa git lazygit fd-find wget python3 cargo ripgrep cmake gcc make unzip gettext && \
     dnf -y clean all && \
     echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers &&  \
     useradd -m -G wheel -s /bin/zsh -u 8055 raghu
@@ -34,7 +35,9 @@ RUN sudo rm -rf /etc/localtime && \
     rm -rf neovim && \
 ## build & install fuzzy finder frm src
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
-    ~/.fzf/install --all
+    ~/.fzf/install --all && \
+## install treesitter via cargo
+    cargo install tree-sitter-cli
 
 ENTRYPOINT ["bash", "-c", "tail -f /dev/null"]
 
