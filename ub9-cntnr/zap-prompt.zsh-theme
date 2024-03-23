@@ -28,3 +28,6 @@ PROMPT+="%B%{$fg[white]%}] %B%{$fg[yellow]%}- on %D{[%a %f/%m/%y]} at [%D{%T}]
 %B%{$fg[white]%}$ "
 
 PROMPT=${PROMPT/\%c/\%~}
+
+# bash PS1:
+# PS1='\u@\h\[\e[00;36m in \w\e[00;32m on $(date +'%d-%m-%Y at %T hrs') \e[00;35m\]\n$ \[\e[0m\]'
