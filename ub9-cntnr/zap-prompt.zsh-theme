@@ -30,4 +30,4 @@ PROMPT+="%B%{$fg[white]%}] %B%{$fg[yellow]%}- on %D{[%a %f/%m/%y]} at [%D{%T}]
 PROMPT=${PROMPT/\%c/\%~}
 
 # bash PS1:
-# PS1='\u@\h\[\e[00;36m in \w\e[00;32m on $(date +'%d-%m-%Y at %T hrs') \e[00;35m\]\n$ \[\e[0m\]'
+# PS1="\n\u@\h\[\e[00;36m in \w\e[00;32m on $(date +'%d-%m-%Y\e[00;33m at %T hrs\[\e[0m\]') \e[00;35m\]\n$ \[\e[0m\]"
